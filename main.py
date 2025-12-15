@@ -61,25 +61,17 @@ news_data = {
     ]
 }
 
-# Servir les fichiers statiques (HTML, CSS, JS) sur /static
-app.mount("/static", StaticFiles(directory=".", html=False), name="static")
+# Servir les fichiers statiques depuis le dossier static/
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Route pour la page d’accueil
+# Route pour la page d'accueil (index.html reste à la racine)
 @app.get("/")
 def root():
-    try:
-        return FileResponse("index.html")
-    except FileNotFoundError:
-        logger.error("index.html not found")
-        return {"error": "Frontend not found"}
+    return FileResponse("index.html")
 
 # --- RSS SOURCES ---
 PQC_RSS_SOURCES = [
     # Standards / Gov
-    "https://csrc.nist.gov/news-events/rss",              # NIST CSRC (includes PQC updates)
-    "https://www.ssi.gouv.fr/feed/",                      # ANSSI FR
-    # Industry / Blogs
-    "https://blog.cloudflare.com/rss/",                   # Cloudflare blog
     "https://www.microsoft.com/en-us/security/blog/feed/",# Microsoft Security Blog
     "https://security.googleblog.com/atom.xml",           # Google Security Blog
     "https://research.ibm.com/blog/rss",                  # IBM Research Blog
@@ -285,3 +277,11 @@ def get_news() -> Dict[str, List[Dict[str, str]]]:
     ]
     logger.info(f"[GET /news] Returning {len(result)} categories\n")
     return result
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
