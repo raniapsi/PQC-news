@@ -1,8 +1,46 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const newsList = document.getElementById("news-list");
     
-    // Add loading message
-    newsList.innerHTML = "<p>Chargement des actualités...</p>";
+    // Add animated loading message with progress
+    newsList.innerHTML = `
+        <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 20px; margin-bottom: 20px;">
+                ⏳ Chargement des actualités...
+            </div>
+            <div style="background: #e0e0e0; height: 30px; border-radius: 15px; overflow: hidden; max-width: 400px; margin: 0 auto;">
+                <div id="progress-bar" style="background: linear-gradient(90deg, #6200ea, #9c27b0); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+            <div id="progress-message" style="margin-top: 15px; color: #666; font-size: 14px;">
+                Récupération des flux RSS...
+            </div>
+        </div>
+    `;
+
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+    const progressMessage = document.getElementById("progress-message");
+
+    // Simulate progress while fetching
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        if (progress < 90) {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            progressBar.style.width = progress + "%";
+            progressText.textContent = Math.round(progress) + "%";
+            
+            // Update message based on progress
+            if (progress < 30) {
+                progressMessage.textContent = "🔍 Récupération des flux RSS...";
+            } else if (progress < 60) {
+                progressMessage.textContent = "📰 Analyse des articles PQC...";
+            } else {
+                progressMessage.textContent = "⚛️ Collecte des actualités quantiques...";
+            }
+        }
+    }, 200);
 
     try {
         const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -18,6 +56,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         const newsData = await response.json();
         console.log("Received data:", newsData);
+        
+        // Complete progress
+        clearInterval(progressInterval);
+        progressBar.style.width = "100%";
+        progressText.textContent = "100%";
+        progressMessage.textContent = "✅ Chargement terminé !";
+        
+        // Wait a moment to show completion
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Clear loading message
         newsList.innerHTML = "";
@@ -80,11 +127,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             newsList.appendChild(articleList);
         });
     } catch (error) {
+        clearInterval(progressInterval);
         console.error("Erreur lors de la récupération des actualités :", error);
         newsList.innerHTML = `
-            <p style="color: red;">Erreur lors du chargement des actualités.</p>
-            <p style="color: #666;">Détails: ${error.message}</p>
-            <p style="color: #666;">Essayez de visiter <a href="/news" target="_blank">/news</a> pour voir les données brutes.</p>
+            <div style="text-align: center; padding: 40px;">
+                <p style="color: red; font-size: 20px;">❌ Erreur lors du chargement</p>
+                <p style="color: #666;">Détails: ${error.message}</p>
+                <p style="color: #666;">Essayez de visiter <a href="/news" target="_blank">/news</a> pour voir les données brutes.</p>
+            </div>
         `;
     }
 });
