@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     newsList.innerHTML = `
         <div style="text-align: center; padding: 40px;">
             <div style="font-size: 20px; margin-bottom: 20px;">
-                ⏳ Chargement des actualités...
+                Chargement des actualités...
             </div>
             <div style="background: #e0e0e0; height: 30px; border-radius: 15px; overflow: hidden; max-width: 400px; margin: 0 auto;">
                 <div id="progress-bar" style="background: linear-gradient(90deg, #6200ea, #9c27b0); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
@@ -33,11 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             // Update message based on progress
             if (progress < 30) {
-                progressMessage.textContent = "🔍 Récupération des flux RSS...";
+                progressMessage.textContent = " Récupération des flux RSS...";
             } else if (progress < 60) {
-                progressMessage.textContent = "📰 Analyse des articles PQC...";
+                progressMessage.textContent = " Analyse des articles PQC...";
             } else {
-                progressMessage.textContent = "⚛️ Collecte des actualités quantiques...";
+                progressMessage.textContent = " Collecte des actualités quantiques...";
             }
         }
     }, 200);
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         clearInterval(progressInterval);
         progressBar.style.width = "100%";
         progressText.textContent = "100%";
-        progressMessage.textContent = "✅ Chargement terminé !";
+        progressMessage.textContent = "Chargement terminé !";
         
         // Wait a moment to show completion
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Erreur lors de la récupération des actualités :", error);
         newsList.innerHTML = `
             <div style="text-align: center; padding: 40px;">
-                <p style="color: red; font-size: 20px;">❌ Erreur lors du chargement</p>
+                <p style="color: red; font-size: 20px;">Erreur lors du chargement</p>
                 <p style="color: #666;">Détails: ${error.message}</p>
                 <p style="color: #666;">Essayez de visiter <a href="/news" target="_blank">/news</a> pour voir les données brutes.</p>
             </div>
